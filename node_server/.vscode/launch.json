@@ -7,6 +7,17 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch via NPM",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run-script",
+                "start"
+            ],
+            "port": 8080
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "啟動程式",
             "program": "${workspaceFolder}\\main.js"
         }

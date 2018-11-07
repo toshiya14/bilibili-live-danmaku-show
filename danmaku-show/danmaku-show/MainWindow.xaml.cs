@@ -36,12 +36,17 @@ namespace danmaku_show
         private Thread PushThread;
         private object giftCountLock = new object();
         private object dmCountLock = new object();
+        int giftCount = 0;
+        int dmCount = 0;
+        int port = 0;
         public MainWindow()
         {
             InitializeComponent();
             try
             {
                 this.inpRoomid.Text = Properties.Settings.Default.roomid.ToString();
+                this.inpPort.Text = Properties.Settings.Default.port.ToString();
+                port = Properties.Settings.Default.port;
             }
             catch
             {
@@ -52,10 +57,12 @@ namespace danmaku_show
 
             try
             {
-                ServerProcess.StartInfo.FileName = "npm.exe";
-                ServerProcess.StartInfo.Arguments = "run start --prefix \"" + System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\node_server\"";
-                ServerProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                ServerProcess.Start();
+                var psi = new ProcessStartInfo();
+                psi.UseShellExecute = false;
+                psi.CreateNoWindow = true;
+                psi.FileName = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\start_server.cmd";
+                Trace.TraceInformation(psi.FileName);
+                ServerProcess = Process.Start(psi);
 
                 PushThread = new Thread(() => {
                     while (true)
@@ -69,7 +76,7 @@ namespace danmaku_show
                 lbServerState.Text = "OK";
                 lbServerState.Foreground = new SolidColorBrush(Color.FromRgb(0, 200, 0));
             }
-            catch
+            catch(Exception exc)
             {
 
             }
@@ -81,8 +88,16 @@ namespace danmaku_show
             {
                 lock (dmCountLock)
                 {
-                    var cnt = Convert.ToInt32(lbDanmakuCount.Text);
-                    lbDanmakuCount.Text = (cnt + 1).ToString();
+                    dmCount++;
+                }
+                try
+                {
+                    DispatcherUIUpdate(() => {
+                        lbDanmakuCount.Text = dmCount.ToString();
+                    });
+                }
+                catch {
+                    // do nothing.
                 }
                 lock (queue)
                 {
@@ -102,8 +117,17 @@ namespace danmaku_show
             {
                 lock (giftCountLock)
                 {
-                    var cnt = Convert.ToInt32(lbGiftCount.Text);
-                    lbGiftCount.Text = (cnt + 1).ToString();
+                    giftCount+=e.Danmaku.GiftCount;
+                }
+                try
+                {
+                    DispatcherUIUpdate(() => {
+                        lbGiftCount.Text = giftCount.ToString();
+                    });
+                }
+                catch
+                {
+                    // do nothing.
                 }
                 lock (queue)
                 {
@@ -181,6 +205,7 @@ namespace danmaku_show
             try
             {
                 Properties.Settings.Default.port = port;
+                this.port = port;
                 Properties.Settings.Default.Save();
             }
             catch (Exception)
@@ -210,6 +235,19 @@ namespace danmaku_show
             }
         }
 
+        private void btnConfig_Click(object sender, RoutedEventArgs e)
+        {
+            var port = Convert.ToInt32(inpPort.Text);
+            if (port > 0)
+            {
+                SavePort(port);
+            }
+            else
+            {
+                inpPort.Text = "";
+            }
+        }
+
         private void QueueMessage(object obj)
         {
             lock (queue)
@@ -231,10 +269,9 @@ namespace danmaku_show
                 queue.Clear();
             }
             var body = JsonConvert.SerializeObject(new { count = ds.Count, ds = ds });
-            var req = WebRequest.CreateHttp("http://localhost:" + Properties.Settings.Default.port+"/danmaku");
+            var req = WebRequest.CreateHttp("http://localhost:" + port +"/danmaku");
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.TransferEncoding = "utf-8";
             using(var stream = req.GetRequestStream())
             {
                 using(var writer = new StreamWriter(stream, Encoding.UTF8))
@@ -249,20 +286,24 @@ namespace danmaku_show
                 {
                     using(var stream = resp.GetResponseStream())
                     {
-                        var bytes = new byte[stream.Length];
-                        stream.Read(bytes, 0, (int)stream.Length);
-                        var str = Encoding.UTF8.GetString(bytes);
-                        var json = JObject.Parse(str);
-                        if (!json["msg"].Equals("OK")) {
-                            throw new Exception();
+                        using (var reader = new StreamReader(stream))
+                        {
+                            var str = reader.ReadToEnd();
+                            var json = JObject.Parse(str);
+                            if (!json["msg"].ToString().Equals("OK"))
+                            {
+                                throw new Exception();
+                            }
                         }
                     }
                 }
             }
             catch (Exception)
             {
-                lbServerState.Text = "BAD";
-                lbServerState.Foreground = new SolidColorBrush(Color.FromRgb(200, 0, 0));
+                DispatcherUIUpdate(() => {
+                    lbServerState.Text = "BAD";
+                    lbServerState.Foreground = new SolidColorBrush(Color.FromRgb(200, 0, 0));
+                });
                 lock (queue)
                 {
                     queue.InsertRange(0, ds);
@@ -270,25 +311,16 @@ namespace danmaku_show
             }
         }
 
-        private void btnConfig_Click(object sender, RoutedEventArgs e)
-        {
-            var port = Convert.ToInt32(inpPort.Text);
-            if (port > 0)
-            {
-                SavePort(port);
-            }
-            else
-            {
-                inpPort.Text = "";
-            }
-        }
-
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (!ServerProcess.HasExited)
             {
-                ServerProcess.Kill();
+                ServerProcess.Dispose();
             }
+        }
+
+        private void DispatcherUIUpdate(Action action) {
+            this.Dispatcher.Invoke(action);
         }
     }
 }

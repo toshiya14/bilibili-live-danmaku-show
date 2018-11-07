@@ -25,7 +25,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="服务器端口" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
             <TextBox x:Name="inpPort" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="3"></TextBox>
-            <Button x:Name="btnConfig" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="3" Content="设定"/>
+            <Button x:Name="btnConfig" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="3" Content="设定" Click="btnConfig_Click"/>
         </Grid>
         <GroupBox Header="资讯">
             <Grid>

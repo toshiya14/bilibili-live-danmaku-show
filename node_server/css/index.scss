@@ -43,12 +43,15 @@
     }
 }
 .danmaku-board{
+    position: fixed;
+    bottom:0;
+    left:2px;
+    right:2px;
     list-style: none;
     padding:10px;
     border-radius: 4px;
     margin:0;
-    font-size:18px;
-    background-color:rgba(0,0,0,0.2);
+    background-color:rgba(0,0,0,0.5);
     color:#FEFEFE;
     font-family: 'XHei';
     &>*{
@@ -103,7 +106,7 @@
         }
         &>.name{
             opacity: 0;
-            color:#c0392b;
+            color:#35ccff;
             margin-right:0.35em;
             &.active{
                 animation: namefadein 0.5s forwards cubic-bezier(.23,.98,.75,1.37);

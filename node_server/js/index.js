@@ -5,25 +5,7 @@ var NAME_DURATION = 800;
 var CHAR_DURATION = 100;
 var last_fetch_time = 0;
 var renderState = 'free';
-var danlist = [{
-    ico: 'ico-vip',
-    name: '测试VIP',
-    msg: '测试内容，没有意义'
-}, {
-    ico: 'ico-gift',
-    name: '测试用户',
-    msg: '辣条 x 99'
-}, {
-    ico: 'ico-system',
-    name: '断开连接'
-}, {
-    ico: 'ico-system',
-    name: '重新连接'
-}, {
-    ico: 'ico-danmaku',
-    name: '测试用户',
-    msg: '测试内容，没有意义'
-}];
+var danlist = [];
 
 $(function () {
     var showComment = function (ico, name, msg) {
@@ -50,7 +32,7 @@ $(function () {
         }, ICO_DURATION * 0.9);
 
         // split msg
-        var charlist = msg.split("").map(x => '<span class="char">' + x + '</span>');
+        var charlist = msg.split("").map(x => '<span class="char">' + htmlencode(x) + '</span>');
         if (charlist.length === 0) {
             setTimeout(function () {
                 renderState = 'free';
@@ -96,6 +78,37 @@ $(function () {
             $el.remove();
         });
     }
+    var htmlencode = function (text) {
+        if (text === " ") {
+            return "&nbsp;";
+        }
+        var div = $("<div>" + text + "</div>");
+        var r = div.html();
+        div.remove();
+        return r;
+    }
+    var processComment = function (e) {
+        var item = {};
+        if (e.type === 'SYSTEM') {
+            item.ico = 'ico-system',
+                item.name = e.msg.msg;
+        } else if (e.type === 'GIFT') {
+            item.ico = 'ico-gift',
+                item.name = e.msg.data.user;
+            item.msg = e.msg.data.gift + " x " + e.msg.data.count;
+        } else if (e.type === 'DANMAKU') {
+            item.ico = e.msg.data.isAdmin ? 'ico-admin' : e.msg.data.isVIP ? 'ico-vip' : 'ico-danmaku';
+            item.name = e.msg.data.user;
+            item.msg = e.msg.data.text;
+        } else if (e.type === 'WELCOME') {
+            item.ico = e.msg.data.isAdmin ? 'ico-admin' : e.msg.data.isVIP ? 'ico-vip' : 'ico-danmaku';
+            item.name = e.msg.data.user;
+            item.msg = "进入房间";
+        } else {
+            return undefined;
+        }
+        return item;
+    }
     var fetchComments = function () {
         $.getJSON({
             dataType: 'json',
@@ -104,34 +117,14 @@ $(function () {
             last_fetch_time = resp.time;
             if (resp.cnt > 0) {
                 resp.ds.map(function (e) {
-                    var item = {};
-                    if (e.type === 'SYSTEM') {
-                        item.ico = 'ico-system',
-                            item.name = e.msg.msg;
-                    } else if (e.type === 'GIFT') {
-                        item.ico = 'ico-gift',
-                            item.name = e.msg.data.user;
-                        item.msg = e.msg.data.gift + " x " + e.msg.data.count;
-                    } else if (e.type === 'DANMAKU') {
-                        item.ico = e.msg.data.isAdmin ? 'ico-admin' : e.msg.data.isVIP ? 'ico-vip' : 'ico-danmaku';
-                        item.name = e.msg.data.user;
-                        item.msg = e.msg.data.text;
-                    } else if (e.type === 'WELCOME') {
-                        item.ico = e.msg.data.isAdmin ? 'ico-admin' : e.msg.data.isVIP ? 'ico-vip' : 'ico-danmaku';
-                        item.name = e.msg.data.user;
-                        item.msg = "进入房间";
-                    } else {
-                        return;
+                    var item = processComment(e);
+                    if (item) {
+                        danlist.push(item);
                     }
-                    danlist.push(item);
                 });
             }
         });
     }
-
-    var ico = 'ico-vip';
-    var name = '測試用戶';
-    var msg = '测试弹幕显示内容，这是一条测试内容。';
     var processQueue = function () {
         if (renderState === 'busy') {
             setTimeout(processQueue, SCAN_FREQUENCE);
@@ -151,10 +144,16 @@ $(function () {
     processQueue();
     $.getJSON({
         dataType: 'json',
-        url: '/time'
+        url: '/lastdm?c=5'
     }).done(function (resp) {
-        if (resp.time) {
-            last_fetch_time = resp.time;
+        last_fetch_time = resp.time;
+        if (resp.cnt > 0) {
+            resp.ds.map(function (e) {
+                var item = processComment(e);
+                if (item) {
+                    danlist.push(item);
+                }
+            });
         }
     });
     setInterval(() => {
@@ -162,5 +161,5 @@ $(function () {
             return;
         }
         fetchComments();
-    }, 300);
+    }, 200);
 });

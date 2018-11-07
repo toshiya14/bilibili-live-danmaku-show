@@ -48,10 +48,21 @@ app.get("/danmaku", function (req, resp) {
     });
 });
 
+app.get("/lastdm", function (req, resp) {
+    var data = req.query;
+    var count = data.c;
+    var list = cache.slice(-count);
+    resp.json({
+        time: Date.now(),
+        cnt: list.length,
+        ds: list
+    });
+});
+
 app.get("/time", function (req, resp) {
     resp.json({
         time: Date.now()
     });
 });
 
-app.listen(8080);
+app.listen(6099);
