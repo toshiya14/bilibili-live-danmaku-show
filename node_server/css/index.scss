@@ -1,0 +1,128 @@
+@keyframes icofadein{
+    0%{
+        width:0;
+        height:0;
+        transform: scale(1, 1) rotate(90deg);
+    }
+    70%{
+        width:1.2em;
+        height:1.2em;
+        transform: scale(1.5, 1.5) rotate(-30deg);
+    }
+    100%{
+        width:1.2em;
+        height:1.2em;
+        transform: scale(1, 1) rotate(0deg);
+    }
+}
+@keyframes namefadein{
+    0%{
+        opacity: 0;
+        transform: translate(-100px,0);
+    }
+    100%{
+        opacity: 1;
+        transform: translate(0,0);
+    }
+}
+@keyframes charfadein{
+    0%{
+        transform: scale(0, 0) rotate(90deg);
+        height:0;
+        opacity: 0;
+    }
+    70%{
+        transform: scale(1.25, 1.25) rotate(-30deg);
+        height:1.2em;
+        opacity: 1;
+    }
+    100%{
+        transform: scale(1, 1) rotate(0deg);
+        height:1.2em;
+        opacity: 1;
+    }
+}
+.danmaku-board{
+    list-style: none;
+    padding:10px;
+    border-radius: 4px;
+    margin:0;
+    font-size:18px;
+    background-color:rgba(0,0,0,0.2);
+    color:#FEFEFE;
+    font-family: 'XHei';
+    &>*{
+        padding:0;
+        margin:0;
+        margin-bottom:3px;
+        padding-left:1.5em;
+        position:relative;
+        &:nth-child(1){
+            margin-top:3px;
+        }
+        &:after{
+            content:"";
+            display:table;
+            clear:both;
+        }
+        &>span{
+            display:block;
+            float:left;
+            line-height:1.2em;
+            height:1.2em;
+            font-size:1em;
+        }
+        &>.ico{
+            width:0;
+            height:0;
+            background-size:contain;
+            background-repeat: no-repeat;
+            margin-left:-1.5em;
+            &.active{
+                animation: icofadein 0.8s forwards;
+            }
+            &.predelete{
+                animation: icofadein 0.8s forwards;
+                animation-direction: reverse;
+            }
+            &.ico-vip{
+                background-image:url(./img/vip-color.png);
+            }
+            &.ico-danmaku{
+                background-image:url(./img/messages-hover.png);
+            }
+            &.ico-system{
+                background-image:url(./img/live-room.png);
+            }
+            &.ico-gift{
+                background-image:url(./img/gift.png);
+            }
+            &.ico-admin{
+                background-image:url(./img/tv.png);
+            }
+        }
+        &>.name{
+            opacity: 0;
+            color:#c0392b;
+            margin-right:0.35em;
+            &.active{
+                animation: namefadein 0.5s forwards cubic-bezier(.23,.98,.75,1.37);
+            }
+            &.predelete{
+                animation: namefadein 0.5s forwards cubic-bezier(.23,.98,.75,1.37);
+                animation-direction: reverse;
+            }
+        }
+        &>.char{
+            opacity:0;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+            &.active{
+                animation: charfadein 0.5s forwards;
+            }
+            &.predelete{
+                animation: charfadein 0.5s forwards;
+                animation-direction: reverse;
+            }
+        }
+    }
+}

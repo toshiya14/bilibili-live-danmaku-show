@@ -1,0 +1,24 @@
+{
+  "name": "danmaku_show_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/toshiya14/bilibili-live-danmaku-show.git"
+  },
+  "author": "Akaishi Toshiya",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/toshiya14/bilibili-live-danmaku-show/issues"
+  },
+  "homepage": "https://github.com/toshiya14/bilibili-live-danmaku-show#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  }
+}

@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2050
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "danmaku-show", "danmaku-show\danmaku-show.csproj", "{12A9EEE8-3816-467B-9289-DAB1023612C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiliDMLib", "..\bililive_dm\BiliDMLib\BiliDMLib.csproj", "{76778870-A6F5-43F4-9BAA-DEC0473F217E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BilibiliDM_PluginFramework", "..\bililive_dm\BilibiliDM_PluginFramework\BilibiliDM_PluginFramework.csproj", "{62FE6607-FE23-4DF0-BF23-9FB7D70C829A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12A9EEE8-3816-467B-9289-DAB1023612C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12A9EEE8-3816-467B-9289-DAB1023612C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12A9EEE8-3816-467B-9289-DAB1023612C8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{12A9EEE8-3816-467B-9289-DAB1023612C8}.Debug|x86.Build.0 = Debug|Any CPU
+		{12A9EEE8-3816-467B-9289-DAB1023612C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12A9EEE8-3816-467B-9289-DAB1023612C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12A9EEE8-3816-467B-9289-DAB1023612C8}.Release|x86.ActiveCfg = Release|Any CPU
+		{12A9EEE8-3816-467B-9289-DAB1023612C8}.Release|x86.Build.0 = Release|Any CPU
+		{76778870-A6F5-43F4-9BAA-DEC0473F217E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76778870-A6F5-43F4-9BAA-DEC0473F217E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76778870-A6F5-43F4-9BAA-DEC0473F217E}.Debug|x86.ActiveCfg = Debug|x86
+		{76778870-A6F5-43F4-9BAA-DEC0473F217E}.Debug|x86.Build.0 = Debug|x86
+		{76778870-A6F5-43F4-9BAA-DEC0473F217E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76778870-A6F5-43F4-9BAA-DEC0473F217E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76778870-A6F5-43F4-9BAA-DEC0473F217E}.Release|x86.ActiveCfg = Release|x86
+		{76778870-A6F5-43F4-9BAA-DEC0473F217E}.Release|x86.Build.0 = Release|x86
+		{62FE6607-FE23-4DF0-BF23-9FB7D70C829A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62FE6607-FE23-4DF0-BF23-9FB7D70C829A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62FE6607-FE23-4DF0-BF23-9FB7D70C829A}.Debug|x86.ActiveCfg = Debug|x86
+		{62FE6607-FE23-4DF0-BF23-9FB7D70C829A}.Debug|x86.Build.0 = Debug|x86
+		{62FE6607-FE23-4DF0-BF23-9FB7D70C829A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62FE6607-FE23-4DF0-BF23-9FB7D70C829A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62FE6607-FE23-4DF0-BF23-9FB7D70C829A}.Release|x86.ActiveCfg = Release|x86
+		{62FE6607-FE23-4DF0-BF23-9FB7D70C829A}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0B940A00-B23B-4439-9D02-C1502D47DF21}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,73 @@
+<Window x:Class="danmaku_show.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:danmaku_show"
+        mc:Ignorable="d"
+        Title="Bilibili 弹幕秀" Height="240" Width="320" FontSize="14" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Closing="Window_Closing">
+    <DockPanel>
+        <Grid DockPanel.Dock="Top" Height="25">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="房间号" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+            <TextBox x:Name="inpRoomid" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="3"></TextBox>
+            <Button x:Name="btnConnect" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="3" Content="连接" Click="btnConnect_Click"></Button>
+        </Grid>
+        <Grid DockPanel.Dock="Top" Height="25">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="服务器端口" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+            <TextBox x:Name="inpPort" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="3"></TextBox>
+            <Button x:Name="btnConfig" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="3" Content="设定"/>
+        </Grid>
+        <GroupBox Header="资讯">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="25" />
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="6*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3" Text="服务器状态"/>
+                    <TextBlock x:Name="lbServerState" Grid.Column="1" HorizontalAlignment="Center" Margin="3" Text="-"/>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="6*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3" Text="连接状态"/>
+                    <TextBlock x:Name="lbConnectionState" Grid.Column="1" HorizontalAlignment="Center" Margin="3" Text="-"/>
+                </Grid>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="6*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3" Text="收到礼物数量"/>
+                    <TextBlock x:Name="lbGiftCount" Grid.Column="1" HorizontalAlignment="Center" Margin="3" Text="0"/>
+                </Grid>
+                <Grid Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="6*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3" Text="收到弹幕数量"/>
+                    <TextBlock x:Name="lbDanmakuCount" Grid.Column="1" HorizontalAlignment="Center" Margin="3" Text="0"/>
+                </Grid>
+            </Grid>
+        </GroupBox>
+    </DockPanel>
+</Window>
