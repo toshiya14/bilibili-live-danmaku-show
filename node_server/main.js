@@ -65,4 +65,8 @@ app.get("/time", function (req, resp) {
     });
 });
 
+app.get("/ping", function (req, resp) {
+    resp.send("bilibili-show-pong#Akaishi")
+});
+
 app.listen(6099);

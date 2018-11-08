@@ -48,7 +48,7 @@
                         <ColumnDefinition Width="4*"/>
                         <ColumnDefinition Width="6*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3" Text="连接状态"/>
+                    <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3" Text="直播间连接状态"/>
                     <TextBlock x:Name="lbConnectionState" Grid.Column="1" HorizontalAlignment="Center" Margin="3" Text="-"/>
                 </Grid>
                 <Grid Grid.Row="2">

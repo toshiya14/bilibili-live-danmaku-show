@@ -1,8 +1,8 @@
 var SCAN_FREQUENCE = 500;
 var MAX_DANMAKU = 3;
-var ICO_DURATION = 800;
-var NAME_DURATION = 800;
-var CHAR_DURATION = 100;
+var ICO_DURATION = 500;
+var NAME_DURATION = 300;
+var CHAR_DURATION = 70;
 var last_fetch_time = 0;
 var renderState = 'free';
 var danlist = [];
@@ -129,11 +129,6 @@ $(function () {
         if (renderState === 'busy') {
             setTimeout(processQueue, SCAN_FREQUENCE);
         } else {
-            var $danitems = $(".danmaku-board").children(":not(.predelete)");
-            if ($danitems.length > MAX_DANMAKU) {
-                var $el = $($danitems[0]);
-                dismissComment($el);
-            }
             var item = danlist.splice(0, 1)[0];
             if (item) {
                 showComment(item.ico, item.name, item.msg);
@@ -141,7 +136,21 @@ $(function () {
             setTimeout(processQueue, SCAN_FREQUENCE);
         }
     }
+
+    var freeComments = function () {
+        var $danitems = $(".danmaku-board").children(":not(.predelete)");
+        if ($danitems.length > MAX_DANMAKU) {
+            var $el = $($danitems[0]);
+            dismissComment($el);
+        }
+        setTimeout(() => {
+            freeComments();
+        }, SCAN_FREQUENCE);
+    }
+
     processQueue();
+    freeComments();
+
     $.getJSON({
         dataType: 'json',
         url: '/lastdm?c=5'

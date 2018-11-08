@@ -331,3 +331,4 @@ ASALocalRun/
 
 # Visual Studio Migration Backup
 MigrationBackup/
+/dist

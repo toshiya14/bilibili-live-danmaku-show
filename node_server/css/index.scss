@@ -4,10 +4,10 @@
         height:0;
         transform: scale(1, 1) rotate(90deg);
     }
-    70%{
+    80%{
         width:1.2em;
         height:1.2em;
-        transform: scale(1.5, 1.5) rotate(-30deg);
+        transform: scale(1.6, 1.6) rotate(-30deg);
     }
     100%{
         width:1.2em;
@@ -27,12 +27,12 @@
 }
 @keyframes charfadein{
     0%{
-        transform: scale(0, 0) rotate(90deg);
+        transform: scale(0, 0) rotate(100deg);
         height:0;
-        opacity: 0;
+        opacity: 0.5;
     }
-    70%{
-        transform: scale(1.25, 1.25) rotate(-30deg);
+    75%{
+        transform: scale(1.6, 1.6) rotate(-25deg);
         height:1.2em;
         opacity: 1;
     }
@@ -82,10 +82,10 @@
             background-repeat: no-repeat;
             margin-left:-1.5em;
             &.active{
-                animation: icofadein 0.8s forwards;
+                animation: icofadein 1s forwards;
             }
             &.predelete{
-                animation: icofadein 0.8s forwards;
+                animation: icofadein 1s forwards;
                 animation-direction: reverse;
             }
             &.ico-vip{
@@ -109,10 +109,10 @@
             color:#35ccff;
             margin-right:0.35em;
             &.active{
-                animation: namefadein 0.5s forwards cubic-bezier(.23,.98,.75,1.37);
+                animation: namefadein 0.7s forwards cubic-bezier(.23,.98,.75,1.37);
             }
             &.predelete{
-                animation: namefadein 0.5s forwards cubic-bezier(.23,.98,.75,1.37);
+                animation: namefadein 0.7s forwards cubic-bezier(.23,.98,.75,1.37);
                 animation-direction: reverse;
             }
         }
