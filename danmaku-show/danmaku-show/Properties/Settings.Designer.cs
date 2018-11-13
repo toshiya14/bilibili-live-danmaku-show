@@ -37,13 +37,157 @@ namespace danmaku_show.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6099")]
         public int port {
             get {
                 return ((int)(this["port"]));
             }
             set {
                 this["port"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool autoConnectRoom {
+            get {
+                return ((bool)(this["autoConnectRoom"]));
+            }
+            set {
+                this["autoConnectRoom"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool reconnectRoom {
+            get {
+                return ((bool)(this["reconnectRoom"]));
+            }
+            set {
+                this["reconnectRoom"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6099")]
+        public int internalServerPort {
+            get {
+                return ((int)(this["internalServerPort"]));
+            }
+            set {
+                this["internalServerPort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool autoStartInternalServer {
+            get {
+                return ((bool)(this["autoStartInternalServer"]));
+            }
+            set {
+                this["autoStartInternalServer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool autoRecoveryInternalServer {
+            get {
+                return ((bool)(this["autoRecoveryInternalServer"]));
+            }
+            set {
+                this["autoRecoveryInternalServer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool autoConnectServer {
+            get {
+                return ((bool)(this["autoConnectServer"]));
+            }
+            set {
+                this["autoConnectServer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool reconnectServer {
+            get {
+                return ((bool)(this["reconnectServer"]));
+            }
+            set {
+                this["reconnectServer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DANMAKU,GIFT,SYSTEM,WELCOME")]
+        public string pushMessageTypes {
+            get {
+                return ((string)(this["pushMessageTypes"]));
+            }
+            set {
+                this["pushMessageTypes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
+        public int pushDuration {
+            get {
+                return ((int)(this["pushDuration"]));
+            }
+            set {
+                this["pushDuration"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool restartInternalServerWhileLost {
+            get {
+                return ((bool)(this["restartInternalServerWhileLost"]));
+            }
+            set {
+                this["restartInternalServerWhileLost"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int restartServerRetryCount {
+            get {
+                return ((int)(this["restartServerRetryCount"]));
+            }
+            set {
+                this["restartServerRetryCount"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int reconnectRoomRetryCount {
+            get {
+                return ((int)(this["reconnectRoomRetryCount"]));
+            }
+            set {
+                this["reconnectRoomRetryCount"] = value;
             }
         }
     }

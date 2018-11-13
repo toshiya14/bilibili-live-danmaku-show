@@ -5,7 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:danmaku_show"
         mc:Ignorable="d"
-        Title="Bilibili 弹幕秀" Height="240" Width="320" FontSize="14" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Closing="Window_Closing">
+        Title="Bilibili 弹幕秀" Height="288" Width="360" FontSize="14" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Closing="Window_Closing" Loaded="Window_Loaded">
+    <Window.Resources>
+        <Style x:Key="BaseConfigItemStyle" TargetType="FrameworkElement">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="3"/>
+        </Style>
+        <Style x:Key="ConfigInputItemStyle" TargetType="TextBox" BasedOn="{StaticResource BaseConfigItemStyle}">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+    </Window.Resources>
     <DockPanel>
         <Grid DockPanel.Dock="Top" Height="25">
             <Grid.ColumnDefinitions>
@@ -23,51 +35,135 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="50"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="服务器端口" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="0" Text="连接端口" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
             <TextBox x:Name="inpPort" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="3"></TextBox>
             <Button x:Name="btnConfig" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="3" Content="设定" Click="btnConfig_Click"/>
         </Grid>
-        <GroupBox Header="资讯">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25" />
-                    <RowDefinition Height="25" />
-                    <RowDefinition Height="25" />
-                    <RowDefinition Height="25" />
-                </Grid.RowDefinitions>
+        <TabControl>
+            <TabItem Header="资讯">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="4*"/>
-                        <ColumnDefinition Width="6*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3" Text="服务器状态"/>
-                    <TextBlock x:Name="lbServerState" Grid.Column="1" HorizontalAlignment="Center" Margin="3" Text="-"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="25" />
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="6*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3" Text="服务器状态"/>
+                        <TextBlock x:Name="lbServerState" Grid.Column="1" HorizontalAlignment="Center" Margin="3" Text="-"/>
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="6*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3" Text="直播间连接状态"/>
+                        <TextBlock x:Name="lbConnectionState" Grid.Column="1" HorizontalAlignment="Center" Margin="3" Text="-"/>
+                    </Grid>
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="6*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3" Text="收到礼物数量"/>
+                        <TextBlock x:Name="lbGiftCount" Grid.Column="1" HorizontalAlignment="Center" Margin="3" Text="0"/>
+                    </Grid>
+                    <Grid Grid.Row="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="6*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3" Text="收到弹幕数量"/>
+                        <TextBlock x:Name="lbDanmakuCount" Grid.Column="1" HorizontalAlignment="Center" Margin="3" Text="0"/>
+                    </Grid>
                 </Grid>
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="4*"/>
-                        <ColumnDefinition Width="6*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3" Text="直播间连接状态"/>
-                    <TextBlock x:Name="lbConnectionState" Grid.Column="1" HorizontalAlignment="Center" Margin="3" Text="-"/>
-                </Grid>
-                <Grid Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="4*"/>
-                        <ColumnDefinition Width="6*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3" Text="收到礼物数量"/>
-                    <TextBlock x:Name="lbGiftCount" Grid.Column="1" HorizontalAlignment="Center" Margin="3" Text="0"/>
-                </Grid>
-                <Grid Grid.Row="4">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="4*"/>
-                        <ColumnDefinition Width="6*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3" Text="收到弹幕数量"/>
-                    <TextBlock x:Name="lbDanmakuCount" Grid.Column="1" HorizontalAlignment="Center" Margin="3" Text="0"/>
-                </Grid>
-            </Grid>
-        </GroupBox>
+            </TabItem>
+            <TabItem Header="设定" x:Name="tabConfig">
+                <TabControl FontSize="12" TabStripPlacement="Left">
+                    <TabControl.Resources>
+                        <Style TargetType="TabItem">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TabItem">
+                                        <Grid Name="Panel">
+                                            <ContentPresenter VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ContentSource="Header" Margin="10,2" TextBlock.TextAlignment="Center"/>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="Panel" Property="Grid.Background" Value="LightSkyBlue"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TabControl.Resources>
+                    <TabItem Header="直播间相关">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="6*"/>
+                                <ColumnDefinition Width="4*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource BaseConfigItemStyle}" Grid.Row="0" Grid.Column="0" Text="自动连接房间" />
+                            <CheckBox Style="{StaticResource BaseConfigItemStyle}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" IsChecked="{Binding Path=ConnectRoomOnStartup}" />
+                            <TextBlock Style="{StaticResource BaseConfigItemStyle}" Grid.Row="1" Grid.Column="0" Text="断线重连" />
+                            <CheckBox Style="{StaticResource BaseConfigItemStyle}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" IsChecked="{Binding Path=ReconnectRoom}" />
+                            <TextBlock Style="{StaticResource BaseConfigItemStyle}" Grid.Row="2" Grid.Column="0" Text="断线重连重试次数" />
+                            <TextBox Style="{StaticResource ConfigInputItemStyle}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" Text="{Binding Path=ReconnectRoomRetryCount}" />
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="内部服务器">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="6*"/>
+                                <ColumnDefinition Width="4*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource BaseConfigItemStyle}" Grid.Row="0" Grid.Column="0" Text="自动启用内部服务器" />
+                            <CheckBox Style="{StaticResource BaseConfigItemStyle}" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" IsChecked="{Binding Path=RunInternalServerOnStartup}"/>
+                            <TextBlock Style="{StaticResource BaseConfigItemStyle}" Grid.Row="1" Grid.Column="0" Text="断开连接时自动重启" />
+                            <CheckBox Style="{StaticResource BaseConfigItemStyle}" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" IsChecked="{Binding Path=AutoRestartInternalServer}"/>
+                            <TextBlock Style="{StaticResource BaseConfigItemStyle}" Grid.Row="2" Grid.Column="0" Text="内部服务器端口" />
+                            <TextBox Style="{StaticResource ConfigInputItemStyle}" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="1" Text="{Binding Path=InternalServerPort}"/>
+                            <Button Style="{StaticResource BaseConfigItemStyle}" HorizontalAlignment="Right" Grid.ColumnSpan="2" Grid.Row="3" Grid.Column="0" Content="手动重启内部服务器" />
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="服务器连接">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="6*"/>
+                                <ColumnDefinition Width="4*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource BaseConfigItemStyle}" Grid.Row="0" Grid.Column="0" Text="推送间隔（毫秒）" />
+                            <TextBox Style="{StaticResource ConfigInputItemStyle}" Grid.Row="0" Grid.Column="1" Text="{Binding Path=PushDuration}"/>
+                            <TextBlock Style="{StaticResource BaseConfigItemStyle}" Grid.Row="1" Grid.Column="0" Text="断线重连尝试次数" />
+                            <TextBox Style="{StaticResource ConfigInputItemStyle}" Grid.Row="1" Grid.Column="1" Text="{Binding Path=ServerRetryCount}"/>
+                            <TextBlock Style="{StaticResource BaseConfigItemStyle}" Grid.Row="2" Grid.Column="0" Text="推送类型" VerticalAlignment="Top" />
+                            <ListBox Margin="3" Grid.Row="2" Grid.Column="1" SelectionMode="Extended" DisplayMemberPath="Value" x:Name="pushTypeSelection" SelectionChanged="pushTypeSelection_SelectionChanged"/>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="杂项"></TabItem>
+                </TabControl>
+            </TabItem>
+        </TabControl>
     </DockPanel>
 </Window>

@@ -33,16 +33,29 @@ namespace danmaku_show
     public partial class MainWindow : Window
     {
         private readonly DanmakuLoader loader = new DanmakuLoader();
-        private List<object> queue = new List<object>();
+        private readonly List<object> queue = new List<object>();
         private Process ServerProcess = new Process();
         private Thread PushThread;
-        private object giftCountLock = new object();
-        private object dmCountLock = new object();
+        private readonly object giftCountLock = new object();
+        private readonly object dmCountLock = new object();
+        private readonly ConfigViewModel confVM= new ConfigViewModel();
         int giftCount = 0;
         int dmCount = 0;
         int port = 0;
         const string pingPongToken = "bilibili-show-pong#Akaishi";
+        public Dictionary<string, string> MessageEnum { get =>
+            new Dictionary<string, string>{
+                { "DANMAKU", "弹幕"},
+                { "GIFT", "礼物"},
+                { "SYSTEM", "系统消息"},
+                { "WELCOME", "欢迎信息"},
+            };
+        }
         Logger logger;
+
+        #region FLAG
+
+        #endregion
 
         private string ServerRoot { get => "http://localhost:" + port; }
 
@@ -400,6 +413,7 @@ namespace danmaku_show
                         lbServerState.Text = "端口被占用";
                         lbServerState.Foreground = new SolidColorBrush(Color.FromRgb(200, 0, 0));
                     });
+                    logger.Fatal("端口被占用");
                 }
             }
         }
@@ -428,6 +442,9 @@ namespace danmaku_show
                     lbServerState.Text = "脚本运行错误";
                     lbServerState.Foreground = new SolidColorBrush(Color.FromRgb(200, 0, 0));
                 });
+                logger.Fatal("脚本运行错误");
+                logger.Error(exc.Message);
+                logger.Error(exc.StackTrace);
             }
 
             DispatcherUIUpdate(() =>
@@ -479,7 +496,7 @@ namespace danmaku_show
             if (!ServerProcess.HasExited)
             {
                 var pid = ServerProcess.Id;
-                KillProcessAndChildren(pid);
+                Utils.KillProcessAndChildren(pid);
             }
             PushThread.Abort();
             Application.Current.Shutdown();
@@ -489,37 +506,47 @@ namespace danmaku_show
             this.Dispatcher.Invoke(action);
         }
 
-        /// <summary>
-        /// Kill a process, and all of its children, grandchildren, etc.
-        /// See https://stackoverflow.com/questions/5901679/kill-process-tree-programmatically-in-c-sharp
-        /// </summary>
-        /// <param name="pid">The pid.</param>
-        private static void KillProcessAndChildren(int pid)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // Cannot close 'system idle process'.
-            if (pid == 0)
+            pushTypeSelection.ItemsSource = MessageEnum;
+            tabConfig.DataContext = confVM;
+            LoadPushMessageTypeFilter();
+        }
+
+        private void pushTypeSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SavePushMessageTypeFilter();
+        }
+
+        private void SavePushMessageTypeFilter()
+        {
+            if(pushTypeSelection.SelectedItems == null)
+            {
+                Config.Current.PushMessageTypeFilter = new string[0];
+            }
+            var list = new List<string>();
+            foreach (KeyValuePair<string, string> i in pushTypeSelection.SelectedItems)
+            {
+                list.Add(i.Key);
+            }
+            Config.Current.PushMessageTypeFilter = list.ToArray();
+        }
+
+        private void LoadPushMessageTypeFilter()
+        {
+            if (pushTypeSelection.SelectedItems == null)
             {
                 return;
             }
-            var searcher = new ManagementObjectSearcher
-                    ("Select * From Win32_Process Where ParentProcessID=" + pid);
-            var moc = searcher.Get();
-            foreach (ManagementObject mo in moc)
-            {
-                KillProcessAndChildren(Convert.ToInt32(mo["ProcessID"]));
-            }
-            try
-            {
-                var proc = Process.GetProcessById(pid);
-                proc.Kill();
-            }
-            catch (ArgumentException)
-            {
-                // Process already exited.
-            }
-            catch (Exception)
-            {
-
+            var list = Config.Current.PushMessageTypeFilter;
+            foreach (var f in list) {
+                foreach (KeyValuePair<string, string> i in pushTypeSelection.Items)
+                {
+                    if (i.Key.Equals(f))
+                    {
+                        pushTypeSelection.SelectedItems.Add(i);
+                    }
+                }
             }
         }
     }

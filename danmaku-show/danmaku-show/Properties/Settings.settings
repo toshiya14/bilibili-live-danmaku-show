@@ -6,7 +6,43 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="port" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">6099</Value>
+    </Setting>
+    <Setting Name="autoConnectRoom" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="reconnectRoom" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="internalServerPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">6099</Value>
+    </Setting>
+    <Setting Name="autoStartInternalServer" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="autoRecoveryInternalServer" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="autoConnectServer" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="reconnectServer" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="pushMessageTypes" Type="System.String" Scope="User">
+      <Value Profile="(Default)">DANMAKU,GIFT,SYSTEM,WELCOME</Value>
+    </Setting>
+    <Setting Name="pushDuration" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">200</Value>
+    </Setting>
+    <Setting Name="restartInternalServerWhileLost" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="restartServerRetryCount" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="reconnectRoomRetryCount" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5</Value>
     </Setting>
   </Settings>
 </SettingsFile>
