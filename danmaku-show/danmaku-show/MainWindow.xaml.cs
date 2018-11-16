@@ -54,7 +54,8 @@ namespace danmaku_show
         Logger logger;
 
         #region FLAG
-
+        private bool isPushServiceBusy;
+        private bool isServerAlive;
         #endregion
 
         private string ServerRoot { get => "http://localhost:" + port; }
@@ -81,6 +82,7 @@ namespace danmaku_show
             }
             loader.Disconnected += Loader_Disconnected;
             loader.ReceivedDanmaku += Loader_ReceivedDanmaku;
+            var roomid = Convert.ToInt32(inpRoomid.Text);
 
             // 启用推送服务
             try
@@ -89,7 +91,7 @@ namespace danmaku_show
                     while (true)
                     {
                         SendMessage();
-                        Thread.Sleep(200);
+                        Thread.Sleep(100);
                     }
                 });
             }
@@ -102,8 +104,32 @@ namespace danmaku_show
                 this.Close();
             }
 
+            // 检测直播间连接
+            ThreadPool.QueueUserWorkItem(t => {
+                if (Config.Current.ConnectRoomOnStartup)
+                {
+                    var count = Config.Current.ReconnectRoomRetryCount;
+                    while(count-- > 0)
+                    {
+                        if (ConnectRoom(roomid).Result)
+                        {
+                            return;
+                        }
+                    }
+                }
+            });
 
-            InitServer();
+            // 检测服务器连接
+            ThreadPool.QueueUserWorkItem(t => {
+                if (Config.Current.RunInternalServerOnStartup)
+                {
+                    var count = Config.Current.ServerRetryCount;
+                    while (count-- > 0)
+                    {
+                        // Here to work.
+                    }
+                }
+            });
         }
 
         private void Loader_ReceivedDanmaku(object sender, ReceivedDanmakuArgs e)
@@ -231,6 +257,14 @@ namespace danmaku_show
                 lbConnectionState.Text = "BAD";
                 lbConnectionState.Foreground = new SolidColorBrush(Color.FromRgb(200, 0, 0));
             });
+            lock (queue)
+            {
+                queue.Add(new
+                {
+                    type = "SYSTEM",
+                    msg = "弹幕姬连不上直播间啦！ QAQ"
+                });
+            }
         }
 
         private void SaveRoomId(int roomId)
@@ -268,30 +302,12 @@ namespace danmaku_show
             //Do whatever you want here..
         }
 
-        private async void btnConnect_Click(object sender, RoutedEventArgs e)
+        private void btnConnect_Click(object sender, RoutedEventArgs e)
         {
             var roomid = Convert.ToInt32(inpRoomid.Text);
-            if (roomid > 0)
-            {
-                SaveRoomId(roomid);
-                btnConnect.IsEnabled = false;
-                loader.Disconnect();
-                var connectresult = await loader.ConnectAsync(roomid);
-                btnConnect.IsEnabled = true;
-                if(!connectresult && loader.Error != null)
-                {
-                    MessageBox.Show("发生错误", loader.Error.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
-                    logger.Fatal("发生错误，无法继续");
-                    logger.Fatal(JsonConvert.SerializeObject(loader.Error));
-                }
-
-                if (connectresult)
-                {
-                    lbConnectionState.Text = "OK";
-                    lbConnectionState.Foreground = new SolidColorBrush(Color.FromRgb(0, 200, 0));
-                    btnConnect.Content = "重连";
-                }
-            }
+            ThreadPool.QueueUserWorkItem(t => {
+                ConnectRoom(roomid).Wait();
+            });
         }
 
         private void btnConfig_Click(object sender, RoutedEventArgs e)
@@ -310,62 +326,123 @@ namespace danmaku_show
 
         private void SendMessage()
         {
-            if(queue.Count == 0)
+            if(queue.Count == 0 || isPushServiceBusy || !isServerAlive)
             {
                 return;
             }
             List<object> ds;
-            lock (queue)
-            {
-                ds = new List<object>(queue);
-                logger.Trace("准备推送 " + ds.Count + "条消息。");
-                logger.Info(JsonConvert.SerializeObject(ds));
-                queue.Clear();
-            }
-            var body = JsonConvert.SerializeObject(new { count = ds.Count, ds = ds });
-            var req = WebRequest.CreateHttp("http://localhost:" + port +"/danmaku");
-            req.Method = "POST";
-            req.ContentType = "application/json";
-            using(var stream = req.GetRequestStream())
-            {
-                using(var writer = new StreamWriter(stream, Encoding.UTF8))
+            ThreadPool.QueueUserWorkItem( t => {
+                isPushServiceBusy = true;
+                lock (queue)
                 {
-                    writer.Write(body);
-                    writer.Flush();
-                }
-            }
-            try
-            {
-                using (var resp = req.GetResponse())
-                {
-                    using(var stream = resp.GetResponseStream())
+                    ds = new List<object>(queue);
+                    logger.Trace("准备推送 " + ds.Count + "条消息。");
+                    logger.Info(JsonConvert.SerializeObject(ds));
+                    queue.Clear();
+                    var body = JsonConvert.SerializeObject(new { count = ds.Count, ds = ds });
+                    var req = WebRequest.CreateHttp("http://localhost:" + port + "/danmaku");
+                    req.Method = "POST";
+                    req.ContentType = "application/json";
+                    using (var stream = req.GetRequestStream())
                     {
-                        using (var reader = new StreamReader(stream))
+                        using (var writer = new StreamWriter(stream, Encoding.UTF8))
                         {
-                            var str = reader.ReadToEnd();
-                            var json = JObject.Parse(str);
-                            if (!json["msg"].ToString().Equals("OK"))
+                            writer.Write(body);
+                            writer.Flush();
+                        }
+                    }
+                    try
+                    {
+                        using (var resp = req.GetResponse())
+                        {
+                            using (var stream = resp.GetResponseStream())
                             {
-                                throw new Exception();
+                                using (var reader = new StreamReader(stream))
+                                {
+                                    var str = reader.ReadToEnd();
+                                    var json = JObject.Parse(str);
+                                    if (!json["msg"].ToString().Equals("OK"))
+                                    {
+                                        throw new Exception();
+                                    }
+                                }
                             }
                         }
                     }
+                    catch (Exception exc)
+                    {
+                        logger.Fatal("推送失败，回滚操作。");
+                        logger.Fatal(exc.Message);
+                        logger.Fatal(exc.StackTrace);
+                        DispatcherUIUpdate(() => {
+                            lbServerState.Text = "BAD";
+                            lbServerState.Foreground = new SolidColorBrush(Color.FromRgb(200, 0, 0));
+                        });
+                        queue.InsertRange(0, ds);
+                    }
+                    isPushServiceBusy = false;
                 }
-            }
-            catch (Exception exc)
+            });
+
+        }
+
+        private async Task<bool> ConnectRoom(int roomid)
+        {
+            if (roomid > 0)
             {
-                logger.Fatal("推送失败，回滚操作。");
-                logger.Fatal(exc.Message);
-                logger.Fatal(exc.StackTrace);
-                DispatcherUIUpdate(() => {
-                    lbServerState.Text = "BAD";
-                    lbServerState.Foreground = new SolidColorBrush(Color.FromRgb(200, 0, 0));
-                });
-                lock (queue)
+                SaveRoomId(roomid);
+                btnConnect.IsEnabled = false;
+                loader.Disconnect();
+                var connectresult = await loader.ConnectAsync(roomid);
+                btnConnect.IsEnabled = true;
+                if (!connectresult && loader.Error != null)
                 {
-                    queue.InsertRange(0, ds);
+                    MessageBox.Show("发生错误", loader.Error.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
+                    logger.Fatal("发生错误，无法继续");
+                    logger.Fatal(JsonConvert.SerializeObject(loader.Error));
+                }
+
+                if (connectresult)
+                {
+                    DispatcherUIUpdate(() =>
+                    {
+                        lbConnectionState.Text = "OK";
+                        lbConnectionState.Foreground = new SolidColorBrush(Color.FromRgb(0, 200, 0));
+                        btnConnect.Content = "重连";
+                    });
+
+                    lock (queue)
+                    {
+                        queue.Add(new
+                        {
+                            type = "SYSTEM",
+                            msg = "连接直播间成功！ ^ ^"
+                        });
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    DispatcherUIUpdate(() =>
+                    {
+                        lbConnectionState.Text = "BAD";
+                        lbConnectionState.Foreground = new SolidColorBrush(Color.FromRgb(200, 0, 0));
+                        btnConnect.Content = "连接";
+                    });
+                    lock (queue)
+                    {
+                        queue.Add(new
+                        {
+                            type = "SYSTEM",
+                            msg = "尝试连接直播间失败！ TwT"
+                        });
+                    }
+
+                    return false;
                 }
             }
+            return false;
         }
 
         private async Task<string> DownloadString(string url)
